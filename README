@@ -1,0 +1,29 @@
+== CurrentCost-Ruby
+
+A gem to provide a Ruby interface to the CurrentCost energy meter 
+(http://www.currentcost.com)
+
+Licensed under the MIT license (See COPYING file for details)
+
+Author: James Smith (james@floppy.org.uk / http://www.floppy.org.uk)
+
+Homepage: http://github.com/Floppy/currentcost-ruby
+
+== INSTALLATION
+
+1) Enable gems from github, if you haven't already done so (rubygems >= 1.2): 
+    > sudo gem sources -a http://gems.github.com
+
+2) Install gem
+    > sudo gem install Floppy-currentcost
+
+== REQUIREMENTS
+
+ruby-serialport >= 0.7.0
+ - You will need to get the source from http://github.com/aaronp/ruby-serialport,
+   build the gem using "rake gem", and install it before using this gem.
+
+== STATUS
+
+This software in in very early development. Access to the meter is not currently
+working.
