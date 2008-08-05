@@ -25,5 +25,5 @@ ruby-serialport >= 0.7.0
 
 == STATUS
 
-This software in in very early development. Access to the meter is not currently
+This software is in very early development. Access to the meter is not currently
 working.
