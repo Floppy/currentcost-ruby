@@ -25,5 +25,6 @@ ruby-serialport >= 0.7.0
 
 == STATUS
 
-This software is in very early development. Access to the meter is not currently
-working.
+This software is in very early development. There is currently no direct access
+to the meter via serial port, but you can use CurrentCost::Reading.from_xml to 
+parse XML which you have got from the meter another way.
