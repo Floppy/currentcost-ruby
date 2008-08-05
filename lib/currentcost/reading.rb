@@ -7,7 +7,7 @@ module CurrentCost
       doc = REXML::Document.new(xml)
       # Create reading object
       r = Reading.new
-      # Extract data
+      # Extract basic data
       r.days_since_birth = REXML::XPath.first(doc, "/msg/date/dsb").text.to_i
       r.hour = REXML::XPath.first(doc, "/msg/date/hr").text.to_i
       r.minute = REXML::XPath.first(doc, "/msg/date/min").text.to_i
@@ -20,6 +20,26 @@ module CurrentCost
       r.channels = []
       REXML::XPath.each(doc, "/msg/*/watts") do |node|
         r.channels << { :watts => node.text.to_i }
+      end
+      # Extract history data
+      if REXML::XPath.first(doc, "/msg/hist")
+        r.history = {}
+        r.history[:hours] = []
+        REXML::XPath.each(doc, "/msg/hist/hrs/*") do |node|
+          r.history[:hours][node.name.slice(1,2).to_i] = node.text.to_f
+        end
+        r.history[:days] = []
+        REXML::XPath.each(doc, "/msg/hist/days/*") do |node|
+          r.history[:days][node.name.slice(1,2).to_i] = node.text.to_i
+        end
+        r.history[:months] = []
+        REXML::XPath.each(doc, "/msg/hist/mths/*") do |node|
+          r.history[:months][node.name.slice(1,2).to_i] = node.text.to_i
+        end
+        r.history[:years] = []
+        REXML::XPath.each(doc, "/msg/hist/yrs/*") do |node|
+          r.history[:years][node.name.slice(1,2).to_i] = node.text.to_i
+        end
       end
       # Done
       return r
@@ -37,6 +57,7 @@ module CurrentCost
     attr_accessor :software_version
     attr_accessor :channels
     attr_accessor :temperature
+    attr_accessor :history
     
   end
   
