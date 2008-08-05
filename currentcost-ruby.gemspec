@@ -9,6 +9,5 @@ Gem::Specification.new do |s|
   s.authors = ["James Smith"]
   s.files = ["README", "COPYING"]
   s.files += ["lib/currentcost.rb", "lib/currentcost/meter.rb", "lib/currentcost/reading.rb"]
-  s.files += ['bin/test_currentcost.rb']
   s.add_dependency('ruby-serialport', [">= 0.7.0"])
 end
