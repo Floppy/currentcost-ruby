@@ -19,12 +19,10 @@ Homepage: http://github.com/Floppy/currentcost-ruby
 
 == REQUIREMENTS
 
-ruby-serialport >= 0.7.0
- - You will need to get the source from http://github.com/aaronp/ruby-serialport,
-   build the gem using "rake gem", and install it before using this gem.
+Floppy-rb232 >= 0.1.0
 
-== STATUS
+== USAGE
 
-This software is in very early development. There is currently no direct access
-to the meter via serial port, but you can use CurrentCost::Reading.from_xml to 
-parse XML which you have got from the meter another way.
+You can read data from the meter by creating an instance of the Meter class, 
+and regularly polling it for readings. See examples/simple.rb for an easy 
+example of how to do this.
