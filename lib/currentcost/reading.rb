@@ -1,3 +1,6 @@
+require 'currentcost/exceptions'
+require 'rexml/document'
+
 module CurrentCost
   
   class Reading
