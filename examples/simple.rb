@@ -16,13 +16,24 @@ OptionParser.new do |opts|
   end  
 end.parse!
 
+# A simple observer class which will receive updates from the meter
+class SimpleObserver
+  def update(reading)
+    # Add all channels to get real figure
+    watts = 0 
+    reading.channels.each { |c| watts += c[:watts] }
+    # Print out measurement
+    puts "New reading received: #{watts} W"
+  end
+end
+
 # Create meter
 meter = CurrentCost::Meter.new(options[:port])
-
-while true
-  reading = meter.latest_reading
-  if reading
-    puts "#{reading.channels[0][:watts]}W"
-  end
-  sleep(6)
-end
+# Create observer
+observer = SimpleObserver.new
+# Register observer with meter
+meter.add_observer(observer)
+# Wait a while, let some readings come in
+sleep(30)
+# Close the meter object to stop it receiving data
+meter.close
