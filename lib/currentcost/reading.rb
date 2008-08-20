@@ -4,7 +4,10 @@ require 'rexml/document'
 module CurrentCost
   
   class Reading
-    
+
+    # Creates a reading object from an XML string.
+    # Raises CurrentCost::ParseError if the XML is malformed or missing
+    # expected content.
     def self.from_xml(xml)
       # Parse XML
       doc = REXML::Document.new(xml)
@@ -49,19 +52,30 @@ module CurrentCost
     rescue 
       raise CurrentCost::ParseError.new("Couldn't parse XML data.")
     end
-    
+
+    # Number of days since the meter was turned on
     attr_accessor :days_since_birth
+    # Current time - hour
     attr_accessor :hour
+    # Current time - minute
     attr_accessor :minute
+    # Current time - second
     attr_accessor :second
+    # Name of the device - always "CC02".
     attr_accessor :name
+    # ID number of the device
     attr_accessor :id
+    # Type id of the device - "1" for a standard CurrentCost meter.
     attr_accessor :type
+    # Version of the meter software
     attr_accessor :software_version
+    # An array of channels. channels[x][:watts] contains the current power for that channel in watts. The figure shown on the meter is the sum of the wattage for all channels.
     attr_accessor :channels
+    # Current temperature
     attr_accessor :temperature
+    # Historical data, represented as a hash. There is a hash entry for days, weeks, months, and years. Each of these is an array of historical kWh data.
     attr_accessor :history
-    
+
   end
-  
+
 end
