@@ -23,6 +23,6 @@ Floppy-rb232 >= 0.1.0
 
 == USAGE
 
-You can read data from the meter by creating an instance of the Meter class, 
-and regularly polling it for readings. See examples/simple.rb for an easy 
-example of how to do this.
+You can read data from the meter by creating an instance of the CurrentCost::Meter
+class, and registering an observer which will receive readings. See examples/simple.rb
+or the CurrentCost::Meter documentation for a simple example of how to do this.
