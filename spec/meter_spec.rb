@@ -12,8 +12,10 @@ describe CurrentCost::Meter do
     @meter.close
   end
 
-  it "should allow access to the latest reading" do
-    @meter.should respond_to(:latest_reading)
+  it "should allow access to the latest reading after a reading is received" do
+    @meter.latest_reading.should be_nil
+    @meter.update('<msg><date><dsb>00007</dsb><hr>23</hr><min>14</min><sec>57</sec></date><src><name>CC02</name><id>00077</id><type>1</type><sver>1.06</sver></src><ch1><watts>00365</watts></ch1><ch2><watts>00000</watts></ch2><ch3><watts>00000</watts></ch3><tmpr>23.3</tmpr></msg>')
+    @meter.latest_reading.is_a?(CurrentCost::Reading).should be_true
   end
   
   it "should be an Observer" do
