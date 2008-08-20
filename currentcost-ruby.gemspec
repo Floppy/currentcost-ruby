@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "currentcost"
-  s.version = "0.1.1"
+  s.version = "0.1.2"
   s.date = "2008-08-20"
   s.summary = "Ruby interface to the CurrentCost energy meter"
   s.email = "james@floppy.org.uk"
