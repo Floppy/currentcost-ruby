@@ -19,10 +19,23 @@ Homepage: http://github.com/Floppy/currentcost-ruby
 
 == REQUIREMENTS
 
-Floppy-rb232 >= 0.1.0
+Floppy-rb232 >= 0.2.3
 
 == USAGE
 
 You can read data from the meter by creating an instance of the CurrentCost::Meter
 class, and registering an observer which will receive readings. See examples/simple.rb
 or the CurrentCost::Meter documentation for a simple example of how to do this.
+
+== TRAY MONITOR
+
+This gem includes the 'currentcost_tray_monitor.rb' application. This is a program
+which will sit in your system tray and display a coloured icon based on your power
+usage. To use the program, run:
+
+  currentcost_tray_monitor.rb -p your_serial_port_name
+
+The program requires the Gtk2 libraries for Ruby (available from
+http://ruby-gnome2.sourceforge.jp/).
+
+For more details, see http://github.com/Floppy/currentcost-ruby/wikis/currentcosttraymonitor
