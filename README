@@ -36,6 +36,8 @@ usage. To use the program, run:
   currentcost_tray_monitor.rb -p your_serial_port_name
 
 The program requires the Gtk2 libraries for Ruby (available from
-http://ruby-gnome2.sourceforge.jp/).
+http://ruby-gnome2.sourceforge.jp/). If the EEML gem (http://github.com/Floppy/eeml-ruby)
+is installed, it can also serve your power data over an HTTP connection to a system like
+Pachube (http://www.pachube.com).
 
 For more details, see http://github.com/Floppy/currentcost-ruby/wikis/currentcosttraymonitor

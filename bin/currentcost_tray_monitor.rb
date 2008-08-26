@@ -8,14 +8,28 @@ require 'rubygems'
 require 'currentcost'
 require 'optparse'
 
+# If EEML is available, start a simple server which will serve power information
+begin
+  require 'eeml'
+  require 'webrick'
+  $eeml_server_enabled = true
+rescue LoadError
+  $eeml_server_enabled = false
+end
+
+
 # Command-line options
 options = {:port => '/dev/ttyS0'}
 OptionParser.new do |opts|
   opts.on("-p", "--serial_port SERIAL_PORT", "serial port") do |p|
     options[:port] = p
-  end  
+  end
+  if $eeml_server_enabled == true
+    opts.on("-h", "--http_port HTTP_PORT", "http port") do |h|
+      options[:http_port] = h
+    end
+  end
 end.parse!
-
 
 # Pixbuf images - generated from PNG files with gdk-pixbuf-csource --raw
 GREY =
@@ -300,6 +314,7 @@ about_item.signal_connect('activate') {
 
 quit_item.signal_connect('activate') {
   $meter.close
+  $eeml_server.shutdown if $eeml_server_enabled && $eeml_server.status == :Running
   Gtk.main_quit
 }
 
@@ -326,6 +341,11 @@ class MeterObserver
     end
     # Set tooltip
     $tray.tooltip = "#{watts} watts"
+    # Update EEML data 
+    if $eeml_server_enabled && $eeml_server.status == :Running
+      $eeml_environment[0].value = watts
+      $eeml_environment.set_updated!
+    end
   rescue
     $tray.pixbuf = $grey_pixbuf
   end
@@ -335,6 +355,29 @@ end
 $meter = CurrentCost::Meter.new(options[:port])
 obs = MeterObserver.new
 $meter.add_observer(obs)
+
+# Create EEML HTTP server if options are set
+if $eeml_server_enabled && options[:http_port]
+  # Create EEML environment
+  $eeml_environment = EEML::Environment.new
+  # Create data object
+  data = EEML::Data.new(0)
+  data.unit = EEML::Unit.new("Watts", :symbol => 'W', :type => :derivedSI)
+  $eeml_environment << data
+  # Create WEBrick server
+  $eeml_server = WEBrick::HTTPServer.new( :Port => options[:http_port] )
+  # Create a simple webrick servlet for index.eeml
+  class EEMLServlet < WEBrick::HTTPServlet::AbstractServlet
+    def do_GET(request, response)
+      response.status = 200
+      response['Content-Type'] = "text/xml"
+      response.body = $eeml_environment.to_eeml
+    end
+  end
+  $eeml_server.mount("/index.eeml", EEMLServlet)
+  trap("INT") {$eeml_server.shutdown}
+  Thread.new{$eeml_server.start}
+end
 
 # Go
 Gtk.main
