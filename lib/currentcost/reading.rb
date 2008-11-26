@@ -76,6 +76,15 @@ module CurrentCost
     # Historical data, represented as a hash. There is a hash entry for days, weeks, months, and years. Each of these is an array of historical kWh data.
     attr_accessor :history
 
+    # The sum of the current wattage for all channels, as shown on the meter
+    def total_watts
+      watts = 0
+      channels.each { |c| watts += c[:watts] }
+      return watts
+    rescue
+      0
+    end
+
   end
 
 end
