@@ -13,43 +13,56 @@ module CurrentCost
       doc = REXML::Document.new(xml)
       # Create reading object
       r = Reading.new
+      # Check version
+      r.software_version = REXML::XPath.first(doc, "/msg/src/sver").text rescue nil
+      if r.software_version.nil?
+        r.software_version = REXML::XPath.first(doc, "/msg/src").text
+      end
       # Extract basic data
-      r.days_since_birth = REXML::XPath.first(doc, "/msg/date/dsb").text.to_i
-      r.hour = REXML::XPath.first(doc, "/msg/date/hr").text.to_i
-      r.minute = REXML::XPath.first(doc, "/msg/date/min").text.to_i
-      r.second = REXML::XPath.first(doc, "/msg/date/sec").text.to_i
-      r.name = REXML::XPath.first(doc, "/msg/src/name").text
-      r.id = REXML::XPath.first(doc, "/msg/src/id").text
-      r.type = REXML::XPath.first(doc, "/msg/src/type").text
-      r.software_version = REXML::XPath.first(doc, "/msg/src/sver").text
-      r.temperature = REXML::XPath.first(doc, "/msg/tmpr").text.to_f
+      if r.software_version.include? "CC128"
+        r.days_since_birth = REXML::XPath.first(doc, "/msg/dsb").text.to_i
+        r.hour, r.minute, r.second = REXML::XPath.first(doc, "/msg/time").text.split(':').map{|x| x.to_i}
+        r.id = REXML::XPath.first(doc, "/msg/id").text
+        r.type = REXML::XPath.first(doc, "/msg/type").text
+        r.temperature = REXML::XPath.first(doc, "/msg/tmpr").text.to_f
+      else
+        r.days_since_birth = REXML::XPath.first(doc, "/msg/date/dsb").text.to_i
+        r.hour = REXML::XPath.first(doc, "/msg/date/hr").text.to_i
+        r.minute = REXML::XPath.first(doc, "/msg/date/min").text.to_i
+        r.second = REXML::XPath.first(doc, "/msg/date/sec").text.to_i
+        r.name = REXML::XPath.first(doc, "/msg/src/name").text
+        r.id = REXML::XPath.first(doc, "/msg/src/id").text
+        r.type = REXML::XPath.first(doc, "/msg/src/type").text
+        r.temperature = REXML::XPath.first(doc, "/msg/tmpr").text.to_f
+        # Extract history data
+        if REXML::XPath.first(doc, "/msg/hist")
+          r.history = {}
+          r.history[:hours] = []
+          REXML::XPath.each(doc, "/msg/hist/hrs/*") do |node|
+            r.history[:hours][node.name.slice(1,2).to_i] = node.text.to_f
+          end
+          r.history[:days] = []
+          REXML::XPath.each(doc, "/msg/hist/days/*") do |node|
+            r.history[:days][node.name.slice(1,2).to_i] = node.text.to_i
+          end
+          r.history[:months] = []
+          REXML::XPath.each(doc, "/msg/hist/mths/*") do |node|
+            r.history[:months][node.name.slice(1,2).to_i] = node.text.to_i
+          end
+          r.history[:years] = []
+          REXML::XPath.each(doc, "/msg/hist/yrs/*") do |node|
+            r.history[:years][node.name.slice(1,2).to_i] = node.text.to_i
+          end
+        end
+      end
+      # Common information
       r.channels = []
       REXML::XPath.each(doc, "/msg/*/watts") do |node|
         r.channels << { :watts => node.text.to_i }
       end
-      # Extract history data
-      if REXML::XPath.first(doc, "/msg/hist")
-        r.history = {}
-        r.history[:hours] = []
-        REXML::XPath.each(doc, "/msg/hist/hrs/*") do |node|
-          r.history[:hours][node.name.slice(1,2).to_i] = node.text.to_f
-        end
-        r.history[:days] = []
-        REXML::XPath.each(doc, "/msg/hist/days/*") do |node|
-          r.history[:days][node.name.slice(1,2).to_i] = node.text.to_i
-        end
-        r.history[:months] = []
-        REXML::XPath.each(doc, "/msg/hist/mths/*") do |node|
-          r.history[:months][node.name.slice(1,2).to_i] = node.text.to_i
-        end
-        r.history[:years] = []
-        REXML::XPath.each(doc, "/msg/hist/yrs/*") do |node|
-          r.history[:years][node.name.slice(1,2).to_i] = node.text.to_i
-        end
-      end
       # Done
       return r
-    rescue 
+    rescue
       raise CurrentCost::ParseError.new("Couldn't parse XML data.")
     end
 
