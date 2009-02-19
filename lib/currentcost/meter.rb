@@ -22,7 +22,7 @@ module CurrentCost
   #     end
   #   end
   # 
-  #   meter = CurrentCost::Meter.new
+  #   meter = CurrentCost::Meter.new(:cc128 => true)
   #   observer = SimpleObserver.new
   #   meter.add_observer(observer)
   #   sleep(30) # wait a while, let some readings come in
@@ -35,10 +35,12 @@ module CurrentCost
 
     # Constructor. 'port' is the name of the serial port that the physical
     # meter is connected to.
+    # Connection is to a classic meter by default. To connect to a new-stlye
+    # CC128, pass :cc128 => true at the end
     # This function will automatically start processing serial data on the
     # specified port. To stop this processing, call close.
-    def initialize(port = '/dev/ttyS0')
-      @port = RB232::Port.new(port, :baud_rate => 9600)
+    def initialize(port = '/dev/ttyS0', options = {})
+      @port = RB232::Port.new(port, :baud_rate => options[:cc128] == true ? 57600 : 9600)
       @protocol = RB232::TextProtocol.new(@port, "\n")
       @protocol.add_observer(self)
       @protocol.start
