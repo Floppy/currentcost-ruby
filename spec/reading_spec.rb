@@ -71,20 +71,18 @@ describe CurrentCost::Reading do
   end
 
   it "should parse basic data from CC128 output" do
-    xml = "<msg><src>CC128-v0.09</src><dsb>00089</dsb><time>13:02:39</time><tmpr>18.7</tmpr><sensor>1</sensor><id>01234</id><type>1</type><ch1><watts>00345</watts></ch1><ch2><watts>02151</watts></ch2><ch3><watts>00000</watts></ch3></msg>"
+    xml = "<msg><src>CC128-v0.11</src><dsb>00005</dsb><time>08:27:51</time><tmpr>14.8</tmpr><sensor>0</sensor><id>00077</id><type>1</type><ch1><watts>00349</watts></ch1></msg>"
     r = CurrentCost::Reading.from_xml(xml)
-    r.days_since_birth.should be(89)
-    r.hour.should be(13)
-    r.minute.should be(02)
-    r.second.should be(39)
-    r.id.should == "01234"
+    r.days_since_birth.should be(5)
+    r.hour.should be(8)
+    r.minute.should be(27)
+    r.second.should be(51)
+    r.id.should == "00077"
     r.type.should == "1"
-    r.software_version.should == "CC128-v0.09"
-    r.temperature.should == 18.7
-    r.channels.size.should be(3)
-    r.channels[0][:watts].should be(345)
-    r.channels[1][:watts].should be(2151)
-    r.channels[2][:watts].should be(0)
+    r.software_version.should == "CC128-v0.11"
+    r.temperature.should == 14.8
+    r.channels.size.should be(1)
+    r.channels[0][:watts].should be(349)
     r.history.should be_nil
   end
 
