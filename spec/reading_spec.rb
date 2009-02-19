@@ -86,6 +86,43 @@ describe CurrentCost::Reading do
     r.history.should be_nil
   end
 
+  it "should parse hour history from CC128 XML output" do
+    float_tolerance = 0.000001
+    xml = "<msg><src>CC128-v0.11</src><dsb>00005</dsb><time>08:29:00</time><hist><dsw>00006</dsw><type>1</type><units>kwhr</units><data><sensor>0</sensor><h020>0.360</h020><h018>0.406</h018><h016>2.328</h016><h014>1.714</h014><h012>1.333</h012><h010>0.473</h010><h008>0.366</h008><h006>0.339</h006><h004>0.430</h004></data><data><sensor>1</sensor><h020>0.000</h020><h018>0.000</h018><h016>0.000</h016><h014>0.000</h014><h012>0.000</h012><h010>0.000</h010><h008>0.000</h008><h006>0.000</h006><h004>0.000</h004></data><data><sensor>2</sensor><h020>0.000</h020><h018>0.000</h018><h016>0.000</h016><h014>0.000</h014><h012>0.000</h012><h010>0.000</h010><h008>0.000</h008><h006>0.000</h006><h004>0.000</h004></data><data><sensor>3</sensor><h020>0.000</h020><h018>0.000</h018><h016>0.000</h016><h014>0.000</h014><h012>0.000</h012><h010>0.000</h010><h008>0.000</h008><h006>0.000</h006><h004>0.000</h004></data><data><sensor>4</sensor><h020>0.000</h020><h018>0.000</h018><h016>0.000</h016><h014>0.000</h014><h012>0.000</h012><h010>0.000</h010><h008>0.000</h008><h006>0.000</h006><h004>0.000</h004></data><data><sensor>5</sensor><h020>0.000</h020><h018>0.000</h018><h016>0.000</h016><h014>0.000</h014><h012>0.000</h012><h010>0.000</h010><h008>0.000</h008><h006>0.000</h006><h004>0.000</h004></data><data><sensor>6</sensor><h020>0.000</h020><h018>0.000</h018><h016>0.000</h016><h014>0.000</h014><h012>0.000</h012><h010>0.000</h010><h008>0.000</h008><h006>0.000</h006><h004>0.000</h004></data><data><sensor>7</sensor><h020>0.000</h020><h018>0.000</h018><h016>0.000</h016><h014>0.000</h014><h012>0.000</h012><h010>0.000</h010><h008>0.000</h008><h006>0.000</h006><h004>0.000</h004></data><data><sensor>8</sensor><h020>0.000</h020><h018>0.000</h018><h016>0.000</h016><h014>0.000</h014><h012>0.000</h012><h010>0.000</h010><h008>0.000</h008><h006>0.000</h006><h004>0.000</h004></data><data><sensor>9</sensor><h020>0.000</h020><h018>0.000</h018><h016>0.000</h016><h014>0.000</h014><h012>0.000</h012><h010>0.000</h010><h008>0.000</h008><h006>0.000</h006><h004>0.000</h004></data></hist></msg>"
+    r = CurrentCost::Reading.from_xml(xml)
+    r.history.should_not be_nil
+    r.history[:hours].size.should be(21)
+    r.history[:hours][4].size.should be(10)
+    r.history[:hours][4][0].should be_close(0.43, float_tolerance)
+    r.history[:hours][4][1].should be_close(0, float_tolerance)
+    r.history[:hours][6][0].should be_close(0.339, float_tolerance)
+    r.history[:hours][20][0].should be_close(0.36, float_tolerance)
+  end
+
+  it "should parse day history from CC128 XML output" do
+    float_tolerance = 0.000001
+    xml = "<msg><src>CC128-v0.11</src><dsb>00005</dsb><time>08:29:01</time><hist><dsw>00006</dsw><type>1</type><units>kwhr</units><data><sensor>0</sensor><d005>9.226</d005><d004>11.750</d004><d003>16.968</d003><d002>12.593</d002><d001>10.460</d001></data><data><sensor>1</sensor><d005>0.000</d005><d004>0.000</d004><d003>0.000</d003><d002>0.000</d002><d001>0.000</d001></data><data><sensor>2</sensor><d005>0.000</d005><d004>0.000</d004><d003>0.000</d003><d002>0.000</d002><d001>0.000</d001></data><data><sensor>3</sensor><d005>0.000</d005><d004>0.000</d004><d003>0.000</d003><d002>0.000</d002><d001>0.000</d001></data><data><sensor>4</sensor><d005>0.000</d005><d004>0.000</d004><d003>0.000</d003><d002>0.000</d002><d001>0.000</d001></data><data><sensor>5</sensor><d005>0.000</d005><d004>0.000</d004><d003>0.000</d003><d002>0.000</d002><d001>0.000</d001></data><data><sensor>6</sensor><d005>0.000</d005><d004>0.000</d004><d003>0.000</d003><d002>0.000</d002><d001>0.000</d001></data><data><sensor>7</sensor><d005>0.000</d005><d004>0.000</d004><d003>0.000</d003><d002>0.000</d002><d001>0.000</d001></data><data><sensor>8</sensor><d005>0.000</d005><d004>0.000</d004><d003>0.000</d003><d002>0.000</d002><d001>0.000</d001></data><data><sensor>9</sensor><d005>0.000</d005><d004>0.000</d004><d003>0.000</d003><d002>0.000</d002><d001>0.000</d001></data></hist></msg>"
+    r = CurrentCost::Reading.from_xml(xml)
+    r.history.should_not be_nil
+    r.history[:days].size.should be(6)
+    r.history[:days][1].size.should be(10)
+    r.history[:days][1][0].should be_close(10.46, float_tolerance)
+    r.history[:days][1][1].should be_close(0, float_tolerance)
+    r.history[:days][2][0].should be_close(12.593, float_tolerance)
+    r.history[:days][5][0].should be_close(9.226, float_tolerance)
+  end
+
+#  it "should parse month history from CC128 XML output" do
+#    float_tolerance = 0.000001
+#    xml = ""
+#    r = CurrentCost::Reading.from_xml(xml)
+#    r.history.should_not be_nil
+#    r.history[:days].size.should be(32)
+#    r.history[:days][1].should be(10)
+#    r.history[:days][2].should be(13)
+#    r.history[:days][31].should be(0)
+#  end
+
   it "should throw an error if parsing fails" do
     xml = ""
     lambda {

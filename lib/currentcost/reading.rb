@@ -22,9 +22,32 @@ module CurrentCost
       if r.software_version.include? "CC128"
         r.days_since_birth = REXML::XPath.first(doc, "/msg/dsb").text.to_i
         r.hour, r.minute, r.second = REXML::XPath.first(doc, "/msg/time").text.split(':').map{|x| x.to_i}
-        r.id = REXML::XPath.first(doc, "/msg/id").text
-        r.type = REXML::XPath.first(doc, "/msg/type").text
-        r.temperature = REXML::XPath.first(doc, "/msg/tmpr").text.to_f
+        r.id = REXML::XPath.first(doc, "/msg/id").text rescue nil
+        r.type = REXML::XPath.first(doc, "/msg/type").text rescue nil
+        r.temperature = REXML::XPath.first(doc, "/msg/tmpr").text.to_f rescue nil
+        # Extract history data
+        if REXML::XPath.first(doc, "/msg/hist")
+          r.history = {}
+          REXML::XPath.each(doc, "/msg/hist/data") do |sensor|
+            sensor_num = sensor.elements['sensor'].text.to_i
+            sensor.elements.each do |item|
+              match = item.name.match "([hdm])([0-9][0-9][0-9])"
+              if match
+                case match[1]
+                when 'h'
+                  type = :hours
+                when 'd'
+                  type = :days
+                when 'm'
+                  type = :months
+                end
+                r.history[type] ||= []
+                r.history[type][match[2].to_i] ||= []
+                r.history[type][match[2].to_i][sensor_num] = item.text.to_f
+              end
+            end
+          end
+        end
       else
         r.days_since_birth = REXML::XPath.first(doc, "/msg/date/dsb").text.to_i
         r.hour = REXML::XPath.first(doc, "/msg/date/hr").text.to_i
