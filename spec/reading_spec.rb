@@ -53,21 +53,21 @@ describe CurrentCost::Reading do
     r = CurrentCost::Reading.from_xml(xml)    
     r.history.should_not be_nil
     r.history[:hours].size.should be(27)    
-    r.history[:hours][2].should be_close(0.0, float_tolerance)
-    r.history[:hours][4].should be_close(2.1, float_tolerance)
-    r.history[:hours][6].should be_close(1.9, float_tolerance)
-    r.history[:hours][26].should be_close(0.3, float_tolerance)
+    r.history[:hours][2][0].should be_close(0.0, float_tolerance)
+    r.history[:hours][4][0].should be_close(2.1, float_tolerance)
+    r.history[:hours][6][0].should be_close(1.9, float_tolerance)
+    r.history[:hours][26][0].should be_close(0.3, float_tolerance)
     r.history[:days].size.should be(32)
-    r.history[:days][1].should be(10)
-    r.history[:days][2].should be(13)
-    r.history[:days][31].should be(0)
+    r.history[:days][1][0].should be(10)
+    r.history[:days][2][0].should be(13)
+    r.history[:days][31][0].should be(0)
     r.history[:months].size.should be(13)
-    r.history[:months][1].should be(1)
-    r.history[:months][2].should be(90)
-    r.history[:months][12].should be(47)
+    r.history[:months][1][0].should be(1)
+    r.history[:months][2][0].should be(90)
+    r.history[:months][12][0].should be(47)
     r.history[:years].size.should be(5)
-    r.history[:years][1].should be(10)
-    r.history[:years][4].should be(600)
+    r.history[:years][1][0].should be(10)
+    r.history[:years][4][0].should be(600)
   end
 
   it "should parse basic data from CC128 output" do
@@ -79,6 +79,7 @@ describe CurrentCost::Reading do
     r.second.should be(51)
     r.id.should == "00077"
     r.type.should == "1"
+    r.sensor.should == "0"
     r.software_version.should == "CC128-v0.11"
     r.temperature.should == 14.8
     r.channels.size.should be(1)

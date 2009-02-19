@@ -25,6 +25,7 @@ module CurrentCost
         r.id = REXML::XPath.first(doc, "/msg/id").text rescue nil
         r.type = REXML::XPath.first(doc, "/msg/type").text rescue nil
         r.temperature = REXML::XPath.first(doc, "/msg/tmpr").text.to_f rescue nil
+        r.sensor = REXML::XPath.first(doc, "/msg/sensor").text rescue nil
         # Extract history data
         if REXML::XPath.first(doc, "/msg/hist")
           r.history = {}
@@ -62,19 +63,19 @@ module CurrentCost
           r.history = {}
           r.history[:hours] = []
           REXML::XPath.each(doc, "/msg/hist/hrs/*") do |node|
-            r.history[:hours][node.name.slice(1,2).to_i] = node.text.to_f
+            r.history[:hours][node.name.slice(1,2).to_i] = [node.text.to_f]
           end
           r.history[:days] = []
           REXML::XPath.each(doc, "/msg/hist/days/*") do |node|
-            r.history[:days][node.name.slice(1,2).to_i] = node.text.to_i
+            r.history[:days][node.name.slice(1,2).to_i] = [node.text.to_i]
           end
           r.history[:months] = []
           REXML::XPath.each(doc, "/msg/hist/mths/*") do |node|
-            r.history[:months][node.name.slice(1,2).to_i] = node.text.to_i
+            r.history[:months][node.name.slice(1,2).to_i] = [node.text.to_i]
           end
           r.history[:years] = []
           REXML::XPath.each(doc, "/msg/hist/yrs/*") do |node|
-            r.history[:years][node.name.slice(1,2).to_i] = node.text.to_i
+            r.history[:years][node.name.slice(1,2).to_i] = [node.text.to_i]
           end
         end
       end
@@ -109,7 +110,9 @@ module CurrentCost
     attr_accessor :channels
     # Current temperature
     attr_accessor :temperature
-    # Historical data, represented as a hash. There is a hash entry for days, weeks, months, and years. Each of these is an array of historical kWh data.
+    # Sensor number
+    attr_accessor :sensor
+    # Historical data, represented as a hash. There is a hash entry for days, weeks, months, and years. Each of these is an array of sensors, each of which contains an array of historical kWh data.
     attr_accessor :history
 
     # The sum of the current wattage for all channels, as shown on the meter
