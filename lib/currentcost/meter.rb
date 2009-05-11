@@ -40,7 +40,7 @@ module CurrentCost
     # This function will automatically start processing serial data on the
     # specified port. To stop this processing, call close.
     def initialize(port = '/dev/ttyS0', options = {})
-      @port = RB232::Port.new(port, :baud_rate => options[:cc128] == true ? 57600 : 9600)
+      @port = RB232::Port.new(port, :baud_rate => (options[:cc128] == true ? 57600 : 9600), :data_bits => 8, :stop_bits => 1, :parity => false)
       @protocol = RB232::TextProtocol.new(@port, "\n")
       @protocol.add_observer(self)
       @protocol.start
