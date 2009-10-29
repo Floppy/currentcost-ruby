@@ -9,6 +9,8 @@ Author: James Smith (james@floppy.org.uk / http://www.floppy.org.uk)
 
 Homepage: http://github.com/Floppy/currentcost-ruby
 
+Documentation: http://docs.github.com/Floppy/currentcost-ruby
+
 == INSTALLATION
 
 1) Enable gems from github, if you haven't already done so (rubygems >= 1.2): 
