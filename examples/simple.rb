@@ -28,7 +28,7 @@ class SimpleObserver
 end
 
 # Create meter
-meter = CurrentCost::Meter.new(options[:port])
+meter = CurrentCost::Meter.new(options[:port], :cc128 => true)
 # Create observer
 observer = SimpleObserver.new
 # Register observer with meter
