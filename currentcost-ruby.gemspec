@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name = "currentcost"
-  s.version = "0.3.3"
-  s.date = "2009-05-11"
+  s.version = "0.3.4"
+  s.date = "2009-11-15"
   s.summary = "Ruby interface to the CurrentCost energy meter"
   s.email = "james@floppy.org.uk"
   s.homepage = "http://github.com/Floppy/currentcost-ruby"
@@ -12,5 +12,5 @@ Gem::Specification.new do |s|
   s.files += ["examples/simple.rb"]
   s.files += ["bin/currentcost_tray_monitor.rb"]
   s.executables = ['currentcost_tray_monitor.rb']
-  s.add_dependency('Floppy-rb232', [">= 0.2.4"])
+  s.add_dependency('rb232', [">= 0.2.4"])
 end

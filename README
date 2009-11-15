@@ -13,15 +13,16 @@ Documentation: http://docs.github.com/Floppy/currentcost-ruby
 
 == INSTALLATION
 
-1) Enable gems from github, if you haven't already done so (rubygems >= 1.2): 
-    > sudo gem sources -a http://gems.github.com
+1) Enable gems from gemcutter, if you haven't already done so:
+    > sudo gem install gemcutter
+    > sudo gem tumble
 
 2) Install gem
-    > sudo gem install Floppy-currentcost
+    > sudo gem install currentcost
 
 == REQUIREMENTS
 
-Floppy-rb232 >= 0.2.3
+rb232 >= 0.2.3
 
 == USAGE
 
