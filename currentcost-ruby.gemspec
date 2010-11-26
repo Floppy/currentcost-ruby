@@ -8,9 +8,9 @@ Gem::Specification.new do |s|
   s.has_rdoc = true
   s.authors = ["James Smith"]
   s.files = ["README", "COPYING"]
-  s.files += ["lib/currentcost.rb", "lib/currentcost/meter.rb", "lib/currentcost/reading.rb", "lib/currentcost/version.rb", "lib/currentcost/exceptions.rb"]
+  s.files += ["lib/currentcost.rb", "lib/currentcost/meter.rb", "lib/currentcost/reading.rb", "lib/currentcost/version.rb", "lib/currentcost/exceptions.rb", "lib/currentcost/text_protocol.rb"]
   s.files += ["examples/simple.rb"]
   s.files += ["bin/currentcost_tray_monitor.rb"]
   s.executables = ['currentcost_tray_monitor.rb']
-  s.add_dependency('rb232', [">= 0.2.4"])
+  s.add_dependency('serialport', [">= 1.0.4"])
 end

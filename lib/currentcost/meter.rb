@@ -1,5 +1,5 @@
-require 'rb232'
-require 'rb232/text_protocol'
+require 'serialport'
+require 'currentcost/text_protocol'
 require 'currentcost/meter'
 require 'currentcost/reading'
 require 'observer'
@@ -40,11 +40,13 @@ module CurrentCost
     # This function will automatically start processing serial data on the
     # specified port. To stop this processing, call close.
     def initialize(port = '/dev/ttyS0', options = {})
-      @port = RB232::Port.new(port, :baud_rate => (options[:cc128] == true ? 57600 : 9600), :data_bits => 8, :stop_bits => 1, :parity => false)
-      @protocol = RB232::TextProtocol.new(@port, "\n")
+      @port = SerialPort.new(port, (options[:cc128] == true ? 57600 : 9600), 8, 1, SerialPort::NONE)
+      @protocol = TextProtocol.new(@port, "\n")
       @protocol.add_observer(self)
       @protocol.start
     end
+
+    attr_accessor :protocol
 
     # Internal use only, client code does not need to use this function. Informs
     # the Meter object that a new message has been received by the serial port. 
@@ -72,6 +74,7 @@ module CurrentCost
     # object.
     def close
       @protocol.stop
+      @port.close
     end
 
   end
