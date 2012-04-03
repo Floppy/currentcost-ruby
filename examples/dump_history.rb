@@ -8,6 +8,9 @@ require 'currentcost/meter'
 
 require 'optparse'
 
+# Instructions!
+puts "Hold down the DOWN and OK buttons for a few seconds, then release..."
+
 # Command-line options
 options = {:port => '/dev/ttyS0'}
 OptionParser.new do |opts|
@@ -21,6 +24,7 @@ class HistoryObserver
   def update(xml)
     if xml.include?('<hist>')
       puts xml
+      $stdout.flush
     end
   end
 end
